@@ -1,6 +1,5 @@
 package org.matsim.contrib.josm.model;
 
-
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.contrib.josm.gui.Preferences;
 import org.openstreetmap.josm.data.osm.Way;
@@ -34,26 +33,51 @@ public class LinkConversionRules {
 	}
 
 	static boolean isBackward(Way way, OsmConvertDefaults.OsmWayDefaults defaults) {
-		boolean backward;
+		boolean backward = false;
+//		OSM Highway Preset
 		if (defaults != null) {
 			backward = !defaults.oneway;
-			if (way.hasTag("oneway", "yes", "true", "1")) {
-				backward = false;
-			} else if (way.hasTag("oneway", "-1")) {
-				backward = true;
-			} else if (way.hasTag("oneway", "no")) {
-				backward = true;
-			}
+			
 			if (defaults.hierarchy > Preferences.getMatsimFilterHierarchy()) {
 				backward = false;
 			}
 			if (way.hasTag("access", "no")) {
 				backward = false;
 			}
-		} else {
-			backward = false;
 		}
+		
+//		MATSim Plugin Link Preset or self-defined
+		if (way.hasTag("oneway", "yes", "true", "1")) {
+			backward = false;
+		} else if (way.hasTag("oneway", "-1")) {
+			backward = true;
+		} else if (way.hasTag("oneway", "0")) {
+			backward = true;
+		} else if (way.hasTag("oneway", "no")) {
+			backward = true;
+		}
+		
 		return backward;
+		
+//		if (defaults != null) {
+//			backward = !defaults.oneway;
+//			if (way.hasTag("oneway", "yes", "true", "1")) {
+//				backward = false;
+//			} else if (way.hasTag("oneway", "-1")) {
+//				backward = true;
+//			} else if (way.hasTag("oneway", "no")) {
+//				backward = true;
+//			}
+//			if (defaults.hierarchy > Preferences.getMatsimFilterHierarchy()) {
+//				backward = false;
+//			}
+//			if (way.hasTag("access", "no")) {
+//				backward = false;
+//			}
+//		} else {
+//			backward = false;
+//		}
+//		return backward;
 	}
 
 	static boolean isForward(Way way, OsmConvertDefaults.OsmWayDefaults defaults) {
@@ -116,7 +140,8 @@ public class LinkConversionRules {
 		return capacity;
 	}
 
-	static Double getLanesPerDirection(Way way, OsmConvertDefaults.OsmWayDefaults defaults, boolean forward, boolean backward) {
+	static Double getLanesPerDirection(Way way, OsmConvertDefaults.OsmWayDefaults defaults, boolean forward,
+			boolean backward) {
 		Double nofLanesPerDirection = null;
 		if (way.getKeys().containsKey(PERMLANES)) {
 			nofLanesPerDirection = parseDoubleIfPossible(way.getKeys().get(PERMLANES));
@@ -157,7 +182,6 @@ public class LinkConversionRules {
 		}
 		return freespeed;
 	}
-
 
 	static String getType(Way way, OsmConvertDefaults.OsmWayDefaults defaults) {
 		String type = null;
