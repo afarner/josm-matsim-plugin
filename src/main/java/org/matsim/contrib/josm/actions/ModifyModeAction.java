@@ -69,7 +69,7 @@ public class ModifyModeAction extends JosmAction {
 		// 3) Open up dialog
 		String[] output = openDialog();
 		
-		if (output[0].isEmpty()) {
+		if (output == null || output[0].isEmpty()) {
 			return;
 		}
 
