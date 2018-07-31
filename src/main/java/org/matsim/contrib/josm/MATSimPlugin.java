@@ -29,6 +29,7 @@ import org.matsim.contrib.josm.actions.ShapeExporter;
 import org.matsim.contrib.josm.actions.TransitScheduleExportAction;
 import org.matsim.contrib.josm.actions.TransitScheduleTest;
 import org.matsim.contrib.josm.gui.LinksToggleDialog;
+import org.matsim.contrib.josm.gui.LinkToolboxDialog;
 import org.matsim.contrib.josm.gui.PTToggleDialog;
 import org.matsim.contrib.josm.gui.Preferences;
 import org.matsim.contrib.josm.gui.StopAreasToggleDialog;
@@ -177,6 +178,7 @@ public class MATSimPlugin extends Plugin implements PreferenceChangedListener {
 	public void mapFrameInitialized(MapFrame oldFrame, MapFrame newFrame) {
 		if (newFrame != null) {
 			MainApplication.getMap().addToggleDialog(new LinksToggleDialog());
+			MainApplication.getMap().addToggleDialog(new LinkToolboxDialog());
 			PTToggleDialog toggleDialog1 = new PTToggleDialog();
 			MainApplication.getMap().addToggleDialog(toggleDialog1);
 			toggleDialog1.init(); // after being added
