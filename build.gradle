@@ -33,8 +33,9 @@ configurations {
 }
 
 dependencies {
-    packIntoJar ('org.matsim:matsim:0.10.0-SNAPSHOT') {changing = true}
-    packIntoJar ('org.matsim.contrib:otfvis:0.10.0-SNAPSHOT') {changing = true}
+    packIntoJar ('org.matsim:matsim:0.11.0-SNAPSHOT') {changing = true}
+    packIntoJar ('org.matsim.contrib:otfvis:0.11.0-SNAPSHOT') {changing = true}
+    packIntoJar ('org.matsim.contrib:emissions:0.11.0-SNAPSHOT') {changing = true}
     packIntoJar ('com.github.conveyal:gtfs-lib:v1.1.0')
 
     def junitVersion = "5.2.0"
@@ -42,20 +43,29 @@ dependencies {
     testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testImplementation ("org.junit.vintage:junit-vintage-engine:$junitVersion")
     testImplementation ('org.openstreetmap.josm:josm-unittest:') {changing = true}
+    testImplementation ("com.github.tomakehurst:wiremock:2.18.0")
+    testImplementation ("org.awaitility:awaitility:3.1.2")
 }
 
 sourceCompatibility = 1.8
 archivesBaseName = "matsim"
 josm {
+<<<<<<< HEAD
     josmCompileVersion = 13996
+=======
+    josmCompileVersion = 14418
+>>>>>>> refs/remotes/josm_matsim_plugin/master
     manifest {
         author = "Nico Kuehnel"
         description = "Allows to edit and extract network information for the traffic simulation MATSim"
         iconPath = "images/dialogs/matsim-scenario.png"
-        minJosmVersion = 13922
+        minJosmVersion = 14418
         mainClass = "org.matsim.contrib.josm.MATSimPlugin"
-        pluginDependencies << 'jts' << 'apache-commons' << 'apache-http' << 'geotools'
+        pluginDependencies << 'jts' << 'geotools'
         website = new URL("http://www.matsim.org")
+        oldVersionDownloadLink 14382, 'v0.9.8', new URL('https://github.com/matsim-org/josm-matsim-plugin/releases/download/v0.9.8/matsim.jar')
+        oldVersionDownloadLink 14289, 'v0.9.6', new URL('https://github.com/matsim-org/josm-matsim-plugin/releases/download/v0.9.6/matsim.jar')
+        oldVersionDownloadLink 13922, 'v0.9.5', new URL('https://github.com/matsim-org/josm-matsim-plugin/releases/download/v0.9.5/matsim.jar')
         oldVersionDownloadLink 13878, 'v0.9.2', new URL('https://github.com/matsim-org/josm-matsim-plugin/releases/download/v0.9.2/matsim.jar')
         oldVersionDownloadLink 12881, 'v0.8.8', new URL('https://github.com/matsim-org/josm-matsim-plugin/releases/download/v0.8.8/matsim.jar')
         oldVersionDownloadLink 12450, 'v0.7.9', new URL('https://github.com/matsim-org/josm-matsim-plugin/releases/download/v0.7.9/matsim.jar')
@@ -65,6 +75,12 @@ josm {
     i18n {
       pathTransformer = getPathTransformer("github.com/matsim-org/josm-matsim-plugin/blob")
     }
+}
+
+tasks.withType(JavaCompile) {
+  options.compilerArgs += [
+    "-Xlint:deprecation"
+  ]
 }
 
 tasks.test.outputs.dir("$buildDir/test-output")

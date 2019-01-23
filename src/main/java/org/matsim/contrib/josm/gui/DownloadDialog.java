@@ -1,18 +1,15 @@
 package org.matsim.contrib.josm.gui;
 
 import org.matsim.contrib.josm.model.OsmConvertDefaults;
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.downloadtasks.DownloadOsmTask;
+import org.openstreetmap.josm.actions.downloadtasks.DownloadParams;
 import org.openstreetmap.josm.actions.downloadtasks.PostDownloadHandler;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.preferences.BooleanProperty;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
-import org.openstreetmap.josm.io.OnlineResource;
-import org.openstreetmap.josm.io.OsmReader;
-import org.openstreetmap.josm.io.OsmServerReader;
-import org.openstreetmap.josm.io.OsmTransferException;
+import org.openstreetmap.josm.io.*;
 import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.*;
 
@@ -95,7 +92,7 @@ public class DownloadDialog extends org.openstreetmap.josm.gui.download.Download
 	 */
 	public static synchronized DownloadDialog getInstance() {
 		if (instance == null) {
-			instance = new DownloadDialog(Main.parent);
+			instance = new DownloadDialog(MainApplication.getMainFrame());
 		}
 		return instance;
 	}
@@ -115,14 +112,15 @@ public class DownloadDialog extends org.openstreetmap.josm.gui.download.Download
 			this.putValue("Name", I18n.tr("Download", new Object[0]));
 			(new ImageProvider("download")).getResource().attachImageIcon(this);
 			this.putValue("ShortDescription", I18n.tr("Click to download the currently selected area", new Object[0]));
-			this.setEnabled(!Main.isOffline(OnlineResource.OSM_API));
+			this.setEnabled(!NetworkManager.isOffline(OnlineResource.OSM_API));
 		}
 
 		public void run() {
 			rememberSettings();
 			Bounds area = getSelectedDownloadArea().get();
 			DownloadOsmTask task = new DownloadOsmTask();
-			MainApplication.worker.submit(new PostDownloadHandler(task, task.download(new FilteredDownloader(area), isNewLayerRequired(), area, null)));
+			MainApplication.worker.submit(new PostDownloadHandler(task, task.download(
+			        new FilteredDownloader(area), new DownloadParams().withNewLayer(false), area, null)));
 			dispose();
 		}
 
